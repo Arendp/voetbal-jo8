@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FIFA Style Speelkaartjes</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+        
+        body {
+            font-family: 'Orbitron', sans-serif;
+            background: 
+                radial-gradient(circle at 20% 50%, #120033 0%, transparent 50%),
+                radial-gradient(circle at 80% 50%, #000000 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, #01002e 0%, transparent 50%),
+                linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #f5576c 75%, #4facfe 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        h1 {
+            color: #fff;
+            font-size: 2.5em;
+            font-weight: 900;
+            text-shadow: 
+                0 0 10px #4facfe,
+                0 0 20px #4facfe,
+                0 0 30px #4facfe,
+                2px 2px 4px rgba(0,0,0,0.8);
+            margin-bottom: 30px;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { text-shadow: 0 0 10px #4facfe, 0 0 20px #4facfe, 0 0 30px #4facfe; }
+            to { text-shadow: 0 0 15px #4facfe, 0 0 25px #4facfe, 0 0 35px #4facfe; }
+        }
+
+        .player-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        .player-btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            font-size: 12px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .player-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: left 0.5s;
+        }
+
+        .player-btn:hover::before {
+            left: 100%;
+        }
+
+        .player-btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .player-btn.active {
+            background: linear-gradient(45deg, #ff6b35, #f7931e);
+            box-shadow: 0 8px 25px rgba(255, 107, 53, 0.4);
+        }
+
+        .card {
+            width: 350px;
+            height: 500px;
+            background: 
+                linear-gradient(135deg, 
+                    #667eea 0%, 
+                    #764ba2 20%, 
+                    #667eea 40%, 
+                    #764ba2 60%, 
+                    #667eea 80%, 
+                    #764ba2 100%
+                );
+            border-radius: 25px;
+            margin: 0 auto;
+            position: relative;
+            box-shadow: 
+                0 0 30px rgba(102, 126, 234, 0.6),
+                0 15px 35px rgba(0,0,0,0.3),
+                inset 0 0 0 1px rgba(255,255,255,0.2);
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 2px solid transparent;
+            background-clip: padding-box;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                linear-gradient(45deg, 
+                    #ff6b35, #f7931e, #ffd700, #ff6b35, #f7931e, #ffd700
+                );
+            background-size: 400% 400%;
+            animation: rainbow 3s ease infinite;
+            z-index: -1;
+            margin: -2px;
+            border-radius: 25px;
+        }
+
+        @keyframes rainbow {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .card:hover {
+            transform: scale(1.08) rotateY(5deg);
+            box-shadow: 
+                0 0 50px rgba(102, 126, 234, 0.8),
+                0 25px 50px rgba(0,0,0,0.4);
+        }
+
+        .card-header {
+            background: 
+                linear-gradient(135deg, 
+                    rgba(0,0,0,0.9) 0%, 
+                    rgba(0,0,0,0.7) 50%, 
+                    rgba(0,0,0,0.9) 100%
+                );
+            color: white;
+            padding: 15px;
+            text-align: center;
+            position: relative;
+            border-bottom: 2px solid #ffd700;
+        }
+
+        .player-name {
+            font-size: 22px;
+            font-weight: 900;
+            margin: 0;
+            text-shadow: 0 0 10px #4facfe;
+            letter-spacing: 1px;
+        }
+
+        .team-name {
+            font-size: 11px;
+            opacity: 0.9;
+            margin: 5px 0;
+            color: #ffd700;
+            font-weight: 700;
+        }
+
+        .team-photo-section {
+            height: 120px;
+            background: url('./teamfoto-2024-2025.png') center center/cover;
+            background-size: cover;
+            background-position: center;
+            border: 2px solid #ffd700;
+            margin: 10px;
+            border-radius: 15px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(255,215,0,0.3);
+        }
+
+        .team-photo-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0,0,0,0.8));
+            color: #ffd700;
+            font-size: 10px;
+            font-weight: 700;
+            text-align: center;
+            padding: 8px;
+        }
+
+        .stats-section {
+            background: 
+                linear-gradient(135deg, 
+                    rgba(255,255,255,0.95) 0%, 
+                    rgba(255,255,255,0.85) 50%, 
+                    rgba(255,255,255,0.95) 100%
+                );
+            margin: 10px;
+            border-radius: 15px;
+            padding: 12px;
+            border: 1px solid rgba(255,215,0,0.3);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 6px;
+            margin-bottom: 10px;
+        }
+
+        .round-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 4px;
+            margin-bottom: 10px;
+        }
+
+        .round-item {
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
+            color: white;
+            padding: 4px;
+            border-radius: 6px;
+            text-align: center;
+            font-size: 8px;
+            font-weight: 700;
+        }
+
+        .round-label {
+            font-size: 7px;
+            opacity: 0.9;
+        }
+
+        .round-value {
+            font-size: 11px;
+            font-weight: 900;
+        }
+
+        .stat-item {
+            text-align: center;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 8px 4px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        .stat-label {
+            font-size: 9px;
+            font-weight: 700;
+            margin-bottom: 2px;
+            opacity: 0.9;
+        }
+
+        .stat-value {
+            font-size: 16px;
+            font-weight: 900;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+        }
+
+        .position-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .position-item {
+            background: linear-gradient(45deg, #ff6b35, #f7931e);
+            color: white;
+            padding: 6px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        .player-quote {
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
+            color: white;
+            padding: 8px;
+            border-radius: 10px;
+            font-size: 10px;
+            font-weight: 700;
+            font-style: italic;
+            margin-bottom: 8px;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+        }
+
+        .comparison {
+            background: linear-gradient(135deg, #ff6b35, #f7931e);
+            color: white;
+            padding: 8px;
+            border-radius: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .comparison::before {
+            content: '⚡';
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            font-size: 30px;
+            opacity: 0.3;
+        }
+
+        .comparison-title {
+            font-size: 10px;
+            font-weight: 700;
+            margin-bottom: 3px;
+            opacity: 0.9;
+        }
+
+        .comparison-player {
+            font-size: 12px;
+            font-weight: 900;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+        }
+
+        .rarity {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: linear-gradient(45deg, #ffd700, #ffed4e);
+            color: #333;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 900;
+            box-shadow: 0 2px 10px rgba(255,215,0,0.5);
+            border: 1px solid #fff;
+        }
+
+        .card-number {
+            position: absolute;
+            bottom: 10px;
+            right: 15px;
+            color: rgba(255,255,255,0.8);
+            font-size: 11px;
+            font-weight: 700;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+        }
+
+        .overall-rating {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: linear-gradient(45deg, #4facfe, #00f2fe);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: 900;
+            box-shadow: 0 4px 15px rgba(79, 172, 254, 0.4);
+            border: 2px solid #fff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏆 FIFA CHAMPIONS LEAGUE CARDS 🏆</h1>
+        
+        <div style="background: linear-gradient(135deg, rgba(0,0,0,0.8), rgba(0,0,0,0.6)); color: white; padding: 15px; border-radius: 15px; margin-bottom: 20px; border: 2px solid #ffd700;">
+            <div style="text-align: center; font-family: 'Orbitron', sans-serif; font-weight: 700;">
+                <div style="color: #ffd700; font-size: 14px; margin-bottom: 8px;">⚽ SEIZOEN 2024-2025 STATISTIEKEN ⚽</div>
+                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; font-size: 12px;">
+                    <div><strong>19</strong><br>Wedstrijden</div>
+                    <div><strong>116</strong><br>Goals Voor</div>
+                    <div><strong>30</strong><br>Goals Tegen</div>
+                    <div><strong>+86</strong><br>Doelsaldo</div>
+                </div>
+                <div style="margin-top: 8px; color: #4facfe; font-size: 12px;">🏆 KAMPIOEN 4e KLASSE • GEPROMOVEERD NAAR 3e KLASSE 🏆</div>
+            </div>
+        </div>
+        
+        <div class="player-buttons">
+            <button class="player-btn active" onclick="showPlayer('bo')">BO</button>
+            <button class="player-btn" onclick="showPlayer('ayman')">AYMAN</button>
+            <button class="player-btn" onclick="showPlayer('daan')">DAAN</button>
+            <button class="player-btn" onclick="showPlayer('marcus')">MARCUS</button>
+            <button class="player-btn" onclick="showPlayer('maurice')">MAURICE</button>
+            <button class="player-btn" onclick="showPlayer('nicojohn')">NICO-JOHN</button>
+            <button class="player-btn" onclick="showPlayer('simon')">SIMON</button>
+            <button class="player-btn" onclick="showPlayer('tygo')">TYGO</button>
+            <button class="player-btn" onclick="showPlayer('yaron')">YARON</button>
+        </div>
+
+        <div class="card" id="player-card">
+            <div class="rarity">⭐ ICON</div>
+            <div class="overall-rating" id="overall">99</div>
+            
+            <div class="card-header">
+                <h2 class="player-name" id="player-name">BO</h2>
+                <p class="team-name">JO8 CHAMPIONS • 4e→3e KLASSE</p>
+            </div>
+
+            <div class="team-photo-section" style="background-image: url('https://i.ibb.co/tMfGJ6y6/Schermafbeelding-2025-06-23-172356.png'); background-size: cover; background-position: center;">
+                <div class="team-photo-overlay">
+                    🏆 TEAM CHAMPIONS 2024-2025 🏆<br>
+                    SEIZOEN VAN 4e NAAR 3e KLASSE
+                </div>
+            </div>
+
+            <div class="stats-section">
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-label">GOALS</div>
+                        <div class="stat-value" id="goals">49</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">ASSISTS</div>
+                        <div class="stat-value" id="assists">1</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">MINUTEN</div>
+                        <div class="stat-value" id="minutes">594</div>
+                    </div>
+                </div>
+
+                <div class="round-stats">
+                    <div class="round-item">
+                        <div class="round-label">RONDE 1</div>
+                        <div class="round-value" id="round1">28G</div>
+                    </div>
+                    <div class="round-item">
+                        <div class="round-label">RONDE 2</div>
+                        <div class="round-value" id="round2">11G</div>
+                    </div>
+                    <div class="round-item">
+                        <div class="round-label">RONDE 3</div>
+                        <div class="round-value" id="round3">10G</div>
+                    </div>
+                </div>
+
+                <div class="position-stats">
+                    <div class="position-item">
+                        <div>⚽ VELDSPELER</div>
+                        <div id="field-games">16x</div>
+                    </div>
+                    <div class="position-item">
+                        <div>🧤 KEEPER</div>
+                        <div id="keeper-games">3x</div>
+                    </div>
+                </div>
+
+                <div class="player-quote" id="quote">
+                    "Als ik op het veld sta, gaan er goals vallen. Dat is gewoon een feit!"
+                </div>
+
+                <div class="comparison">
+                    <div class="comparison-title">SPEELT ZOALS:</div>
+                    <div class="comparison-player" id="comparison">⚡ ERLING HAALAND</div>
+                </div>
+            </div>
+
+            <div class="card-number" id="card-number">#001</div>
+        </div>
+    </div>
+
+    <script>
+        const players = {
+            bo: {
+                name: 'BO',
+                overall: '99',
+                goals: '49',
+                assists: '1',
+                minutes: '594',
+                round1: '28G',
+                round2: '11G', 
+                round3: '10G',
+                fieldGames: '16x',
+                keeperGames: '3x',
+                quote: '"Als ik op het veld sta, gaan er goals vallen. Dat is gewoon een feit!"',
+                comparison: '⚡ ERLING HAALAND',
+                number: '#001'
+            },
+            ayman: {
+                name: 'AYMAN',
+                overall: '88',
+                goals: '4',
+                assists: '0',
+                minutes: '459',
+                round1: '1G',
+                round2: '2G',
+                round3: '1G',
+                fieldGames: '18x',
+                keeperGames: '1x',
+                quote: '"Met Marokkaanse flair en Nederlandse efficiëntie! 🇲🇦"',
+                comparison: '🇲🇦 ACHRAF HAKIMI',
+                number: '#002'
+            },
+            daan: {
+                name: 'DAAN',
+                overall: '91',
+                goals: '11',
+                assists: '0',
+                minutes: '589',
+                round1: '6G',
+                round2: '3G',
+                round3: '2G',
+                fieldGames: '14x',
+                keeperGames: '5x',
+                quote: '"Verdedigen én aanvallen? Geen probleem voor mij!"',
+                comparison: '🌟 WILLIAM SALIBA',
+                number: '#003'
+            },
+            marcus: {
+                name: 'MARCUS',
+                overall: '85',
+                goals: '1',
+                assists: '0',
+                minutes: '415',
+                round1: '1G',
+                round2: '0G',
+                round3: '0G',
+                fieldGames: '12x',
+                keeperGames: '7x',
+                quote: '"Van scorer naar keeper-specialist! Mijn afstandsschot blijft geheim! 💥"',
+                comparison: '💥 ANTONIO RÜDIGER',
+                number: '#004'
+            },
+            maurice: {
+                name: 'MAURICE',
+                overall: '93',
+                goals: '17',
+                assists: '1',
+                minutes: '594',
+                round1: '4G',
+                round2: '6G',
+                round3: '7G',
+                fieldGames: '16x',
+                keeperGames: '3x',
+                quote: '"Ik ruik goals! Altijd op de juiste plek op het juiste moment."',
+                comparison: '🎯 JUDE BELLINGHAM',
+                number: '#005'
+            },
+            nicojohn: {
+                name: 'NICO-JOHN',
+                overall: '89',
+                goals: '9',
+                assists: '0',
+                minutes: '564',
+                round1: '5G',
+                round2: '2G',
+                round3: '2G',
+                fieldGames: '15x',
+                keeperGames: '4x',
+                quote: '"Lang, sterk en betrouwbaar - de rots in de branding!"',
+                comparison: '🗿 ENZO FERNÁNDEZ',
+                number: '#006'
+            },
+            simon: {
+                name: 'SIMON',
+                overall: '90',
+                goals: '13',
+                assists: '1',
+                minutes: '549',
+                round1: '6G',
+                round2: '4G',
+                round3: '3G',
+                fieldGames: '17x',
+                keeperGames: '2x',
+                quote: '"Linksbenig en linksom de goal in! 🔥"',
+                comparison: '🔥 KHVICHA KVARATSKHELIA',
+                number: '#007'
+            },
+            tygo: {
+                name: 'TYGO',
+                overall: '87',
+                goals: '8',
+                assists: '0',
+                minutes: '359',
+                round1: '-',
+                round2: '4G',
+                round3: '4G',
+                fieldGames: '10x',
+                keeperGames: '4x',
+                quote: '"Net als een Duracell konijn - ik blijf maar gaan! Debuut met goal! 🔋"',
+                comparison: '🔋 PEDRI',
+                number: '#008'
+            },
+            yaron: {
+                name: 'YARON',
+                overall: '86',
+                goals: '5',
+                assists: '0',
+                minutes: '564',
+                round1: '2G',
+                round2: '2G',
+                round3: '1G',
+                fieldGames: '13x',
+                keeperGames: '6x',
+                quote: '"Verdedigen of aanvallen? Waarom niet allebei tegelijk! 🚀"',
+                comparison: '🚀 ALPHONSO DAVIES',
+                number: '#009'
+            }
+        };
+
+        function showPlayer(playerKey) {
+            const player = players[playerKey];
+            
+            // Update active button
+            document.querySelectorAll('.player-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // Update card content
+            document.getElementById('player-name').textContent = player.name;
+            document.getElementById('overall').textContent = player.overall;
+            document.getElementById('goals').textContent = player.goals;
+            document.getElementById('assists').textContent = player.assists;
+            document.getElementById('minutes').textContent = player.minutes;
+            document.getElementById('round1').textContent = player.round1;
+            document.getElementById('round2').textContent = player.round2;
+            document.getElementById('round3').textContent = player.round3;
+            document.getElementById('field-games').textContent = player.fieldGames;
+            document.getElementById('keeper-games').textContent = player.keeperGames;
+            document.getElementById('quote').textContent = player.quote;
+            document.getElementById('comparison').textContent = player.comparison;
+            document.getElementById('card-number').textContent = player.number;
+        }
+    </script>
+</body>
+</html>
